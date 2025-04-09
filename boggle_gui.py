@@ -13,33 +13,34 @@ class BoggleGame:
         # Initialize board
         self.board = [[random.choice(alphabet) for _ in range(SIZE)] for _ in range(SIZE)]
 
-        self.user_words = set()
+        self.user_words = set() #valid words submitted by user will be stored here
         self.score = 0
         self.time_left = TIMER_DURATION
-        self.current_word = ""
+        self.current_word = "" #made by current clicks of user
         self.clicked_buttons = []
 
         self.create_widgets()
         self.update_timer()
 
-    def create_widgets(self):
-        self.board_frame = Frame(self.root)
+    def create_widgets(self): #adds all visual elemenst
+        self.board_frame = Frame(self.root) #frame is a container that groups everything
         self.board_frame.pack(pady=10)
 
-        self.letter_buttons = []
+        self.letter_buttons = [] #letters on the board, row wise
         for i in range(SIZE):
             row_buttons = []
             for j in range(SIZE):
-                button = Button(self.board_frame, 
+                button = Button(self.board_frame,   #one single button
                                 text=self.board[i][j], 
                                 font=("Courier", 18), 
                                 width=4, 
                                 height=2,
                                 command=lambda r=i, c=j: self.letter_clicked(r, c))
                 button.grid(row=i, column=j, padx=2, pady=2)
-                row_buttons.append(button)
+                row_buttons.append(button) #letters in one row
             self.letter_buttons.append(row_buttons)
 
+        #adding labels and buttons and timer
         self.current_word_label = Label(self.root, text="Current Word: ", font=("Courier", 16))
         self.current_word_label.pack(pady=5)
 
@@ -75,20 +76,20 @@ class BoggleGame:
     def letter_clicked(self, row, col):
         if self.time_left <= 0:
             return
-        self.current_word += self.board[row][col]
+        self.current_word += self.board[row][col] #adds letters to current word string
         self.current_word_label.config(text=f"Current Word: {self.current_word}")
-        button = self.letter_buttons[row][col]
-        button.config(bg="lightblue")
+        button = self.letter_buttons[row][col] #current button clicked
+        button.config(bg="lightblue") #indicating btn is clicked
         self.clicked_buttons.append(button)
 
     def clear_current_word(self):
-        self.current_word = ""
+        self.current_word = "" #resets current word string
         self.current_word_label.config(text="Current Word: ")
         for button in self.clicked_buttons:
-            button.config(bg="SystemButtonFace")
-        self.clicked_buttons = []
+            button.config(bg="SystemButtonFace") #default button configuratio0n
+        self.clicked_buttons = [] #reset list
 
-    def submit_word(self):
+    def submit_word(self): #submit word button
         word = self.current_word.lower()
         if not word:
             return
@@ -100,11 +101,11 @@ class BoggleGame:
             self.result_label.config(text=f"Already submitted or too short.", fg="gray")
         self.clear_current_word()
 
-    def update_timer(self):
+    def update_timer(self): #timer decrement
         if self.time_left > 0:
             self.time_left -= 1
             self.timer_label.config(text=f"Time Left: {self.time_left}s")
-            self.root.after(1000, self.update_timer)
+            self.root.after(1000, self.update_timer) #after 1s
         else:
             self.end_game()
 
